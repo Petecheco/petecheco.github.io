@@ -16,6 +16,7 @@ const App = new Vue({
       action: '',
       time: '',
       list:'',
+      firsturl:'',
     },
     userId: '',
     // goEasy 添加以下变量
@@ -50,8 +51,9 @@ const App = new Vue({
         this.$refs.video.src = src
       }
       this.player.play()
-      this.controlParam.action = 'play'
+      this.controlParam.action = 'firstplay'
       this.controlParam.time = this.player.currentTime
+      this.controlParam.firsturl = src
       this.sendMessage(this.controlParam)
       localStorage.setItem('currentPlayVideo', src)
 
@@ -121,6 +123,16 @@ const App = new Vue({
           this.player.currentTime = (result.time);
           this.videoList = (result.list);
           break
+        case "firstplay":
+          const src = result.firsturl
+          if(src.includes('.m3u8')){
+            this.hls.loadSource(src);
+            this.hls.attachMedia(this.player);
+          } else {
+            this.$refs.video.src = src
+          }
+          this.player.play()
+          localStorage.setItem('currentPlayVideo', src)
       }
     },
     // 获取 url 参数
